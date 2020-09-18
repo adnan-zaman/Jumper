@@ -10,14 +10,12 @@ public class PlayerController : MonoBehaviour
 {
     public InputActionAsset playerControls;
     public Transform camTransform;
+    [Header("Ground Movement")]
     public float movementSpeed;
     public float rotateSpeed = 0.01f;
 
-    [Header("Debugging")]
-    public bool flipper;
-    public bool turner;
-
-    [Header("Jump Logic")]
+ 
+    [Header("Jump Attributes")]
     //velocities of each jump
     public float[] jumpVelocities;
     //how fast to jump from landing to start next jump in sequence
@@ -64,7 +62,7 @@ public class PlayerController : MonoBehaviour
         gameplayActionMap.Enable();
         movement = gameplayActionMap.FindAction("Move");
         jump = gameplayActionMap.FindAction("Jump");
-        jump.performed += context => jumpPressed = true;
+        jump.performed +=  context => { if (charController.isGrounded) jumpPressed = true; };
 
         charController = GetComponent<CharacterController>();
         prevIsGrounded = charController.isGrounded;
@@ -104,7 +102,7 @@ public class PlayerController : MonoBehaviour
             //target angle relative to world z+ axis
             float targetAngle = Mathf.Atan2(targetDir.x, targetDir.z) * Mathf.Rad2Deg;
 
-            Vector3 forwardFromCamera = (transform.position - camTransform.position).normalized;
+            Vector3 forwardFromCamera = camTransform.forward;
             //we only care about direction on xz plane
             forwardFromCamera.y = 0;
             float angleToNewForward = Vector3.SignedAngle(Vector3.forward, forwardFromCamera, Vector3.up);
@@ -173,8 +171,6 @@ public class PlayerController : MonoBehaviour
 
 
         return new Vector3(0f, yVel, 0f);
-
-        
     }
     
     private IEnumerator Flip()
@@ -188,7 +184,10 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        transform.rotation =  transform.rotation * Quaternion.AngleAxis(0, transform.TransformDirection(Vector3.right));
+        //ensure flip ends with player level with ground and not tilted
+        Vector3 forward = transform.forward;
+        forward.y = 0;
+        transform.forward = forward;
     }
     
 
