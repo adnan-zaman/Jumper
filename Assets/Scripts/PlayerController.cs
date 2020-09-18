@@ -29,7 +29,12 @@ public class PlayerController : MonoBehaviour
     private InputAction jump;
     private CharacterController charController;
 
+    //cant rely on transform.eulerAngles being consistent
+    //so track y world rotation ourselves
+    private float yWorldRot;
+
     /*jump info*/
+
     //y velocity
     private float yVel;
     //whether jump input event was just performed
@@ -62,8 +67,9 @@ public class PlayerController : MonoBehaviour
         jump.performed += context => jumpPressed = true;
 
         charController = GetComponent<CharacterController>();
-
         prevIsGrounded = charController.isGrounded;
+
+        yWorldRot = transform.eulerAngles.y;
     }
 
     void Update()
@@ -103,10 +109,11 @@ public class PlayerController : MonoBehaviour
             forwardFromCamera.y = 0;
             float angleToNewForward = Vector3.SignedAngle(Vector3.forward, forwardFromCamera, Vector3.up);
             float angleRad = angleToNewForward * Mathf.Deg2Rad;
+
             //we want angle to be relative to the forward direction from camera
             targetAngle += angleToNewForward;
-
-            float nextAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref vel, rotateSpeed);
+  
+            float nextAngle = Mathf.SmoothDampAngle(yWorldRot, targetAngle, ref vel, rotateSpeed);
 
             //rotate targetDir by angleRad
             //rotation formula may look swapped but regular rotation formula is relative to x+ axis
@@ -117,21 +124,11 @@ public class PlayerController : MonoBehaviour
                 targetDir.x * Mathf.Cos(angleRad) + targetDir.z * Mathf.Sin(angleRad),
                 0,
                 targetDir.z * Mathf.Cos(angleRad) - targetDir.x * Mathf.Sin(angleRad));
-            Debug.Log(transform.eulerAngles);
-            if (turner)
-            {
-                Debug.Log($"Turner rotates: {new Vector3(0, nextAngle - transform.eulerAngles.y, 0) * Time.deltaTime}");
-                transform.Rotate(new Vector3(0, nextAngle - transform.eulerAngles.y, 0), Space.World);
-                Debug.Log($"After Turner: {transform.eulerAngles}");
-            }
-                
-            if (flipper)
-            {
-                Debug.Log($"Flipper rotates: {new Vector3(360, 0, 0) * Time.deltaTime}");
-                transform.Rotate(new Vector3(360, 0, 0) * Time.deltaTime, Space.Self);
-                Debug.Log($"After Flipper: {transform.eulerAngles}");
-            }
-            Debug.Log("***\n***");
+       
+            transform.Rotate(new Vector3(0, nextAngle - yWorldRot, 0), Space.World);
+            yWorldRot = nextAngle;
+
+              
             groundMovement = targetDir * movementSpeed;
         }
 
@@ -165,8 +162,8 @@ public class PlayerController : MonoBehaviour
                 jumpIndex = 0;
             
             yVel = jumpVelocities[jumpIndex];
-            /*if (jumpIndex == jumpVelocities.Length - 1)
-                StartCoroutine("Flip");*/
+            if (jumpIndex == jumpVelocities.Length - 1)
+                StartCoroutine("Flip");
             jumpPressed = false;
             jumpIndex = (jumpIndex + 1) % jumpVelocities.Length;
         }
@@ -191,6 +188,7 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
+        transform.rotation =  transform.rotation * Quaternion.AngleAxis(0, transform.TransformDirection(Vector3.right));
     }
     
 
