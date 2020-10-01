@@ -1,6 +1,6 @@
 # Jumper
  
-A platformer demo made in Unity
+Simple demo made in Unity to practice implementing movement
 
 ![demo](/media/demo.gif)
 
