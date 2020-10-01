@@ -447,7 +447,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 411105977}
   m_LocalRotation: {x: 0.13268887, y: 0, z: 0, w: 0.99115777}
-  m_LocalPosition: {x: 0.0000006556511, y: 6.4306235, z: -14.886968}
+  m_LocalPosition: {x: 0.0000009536743, y: 6.4306235, z: -14.886968}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 969310720}
@@ -1087,7 +1087,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.13268887, y: 0, z: 0, w: 0.99115777}
-  m_LocalPosition: {x: 0.0000006556511, y: 6.4306235, z: -14.886968}
+  m_LocalPosition: {x: 0.0000009536743, y: 6.4306235, z: -14.886968}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2015,6 +2015,10 @@ PrefabInstance:
       propertyPath: camTransform
       value: 
       objectReference: {fileID: 963194228}
+    - target: {fileID: 231501732, guid: e180b441c0e9cdd429604301c5833245, type: 3}
+      propertyPath: jumpThreshold
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 2989561456603905460, guid: e180b441c0e9cdd429604301c5833245, type: 3}
       propertyPath: m_Name
       value: Player
