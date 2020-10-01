@@ -1,4 +1,0 @@
-triple jump <<<
-    jump depends on keypress length <<<
-        getting it to be variable in real time, idea about taking what you already have
-        but moving every frame <<<
