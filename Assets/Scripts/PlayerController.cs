@@ -45,17 +45,6 @@ public class PlayerController : MonoBehaviour
     //previous value of charController.isGrounded
     private bool prevIsGrounded;
 
-
-    //trying to get variable jump to work..on hold
-    private float timeHeld;
-    private float heightSoFar;
-    private bool recordingJump;
-    private float minJumpHeight = 1.0f;
-    private float maxJumpHeight = 1.0f;
-    private float buttonThresholdTime;
-    private float buttonMaxTime;
-
-
     void Start()
     {
         InputActionMap gameplayActionMap = playerControls.FindActionMap("Player");
@@ -63,6 +52,8 @@ public class PlayerController : MonoBehaviour
         movement = gameplayActionMap.FindAction("Move");
         jump = gameplayActionMap.FindAction("Jump");
         jump.performed +=  context => { if (charController.isGrounded) jumpPressed = true; };
+
+        gameplayActionMap.FindAction("Quit").performed += context => Application.Quit();
 
         charController = GetComponent<CharacterController>();
         prevIsGrounded = charController.isGrounded;
@@ -190,26 +181,5 @@ public class PlayerController : MonoBehaviour
         transform.forward = forward;
     }
     
-
-
-    //todo: figure this OUT
-    private float CalculateVariableJumpVelocity()
-    {
-        float extraHeight = maxJumpHeight - minJumpHeight;
-        float percentage = (timeHeld <= buttonThresholdTime) ? 0f :  Mathf.Min(1f, (timeHeld - buttonThresholdTime) / (buttonMaxTime - buttonThresholdTime));
-        
-        float totalHeight = minJumpHeight + percentage * extraHeight;
-
-        float jumpHeight = totalHeight - heightSoFar;
-
-        //based off kinematic equation vf^2 = vi^2 +2ad
-        //solve for vi
-        float velRequired = Mathf.Sqrt(-2 * gravity * jumpHeight);
-
-        
-        return (yVel < velRequired) ? velRequired : yVel;
-    }
-    
-
 
 }
